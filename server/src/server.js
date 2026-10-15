@@ -1,6 +1,6 @@
-import app from './app.js';
-import env from './config/env.js';
-import connectDB from './config/db.js';
+import app from "./app.js";
+import env from "./config/env.js";
+import connectDB from "./config/db.js";
 
 const RETRY_DELAY_MS = 3000;
 const MAX_ATTEMPTS = env.isProd ? 5 : 3;
@@ -14,7 +14,8 @@ const connectWithRetry = async () => {
       return;
     } catch (err) {
       console.error(
-        `MongoDB connection failed (attempt ${attempt}/${MAX_ATTEMPTS}): ${err.message}`
+        `MongoDB connection failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
+        err.stack || er,
       );
       if (attempt === MAX_ATTEMPTS) throw err;
       await sleep(RETRY_DELAY_MS);
@@ -26,32 +27,38 @@ const start = async () => {
   try {
     await connectWithRetry();
   } catch {
-    console.error('\nCould not connect to MongoDB. The server cannot start.');
-    console.error('Check that:');
-    console.error('  - MONGODB_URI (or MONGO_URI) in server/.env is correct');
-    console.error('  - Your current IP is allowed in MongoDB Atlas -> Network Access');
-    console.error('  - A local MongoDB is running, or run: npm run dev:memory\n');
+    console.error("\nCould not connect to MongoDB. The server cannot start.");
+    console.error("Check that:");
+    console.error("  - MONGODB_URI (or MONGO_URI) in server/.env is correct");
+    console.error(
+      "  - Your current IP is allowed in MongoDB Atlas -> Network Access",
+    );
+    console.error(
+      "  - A local MongoDB is running, or run: npm run dev:memory\n",
+    );
     process.exit(1);
   }
 
   const server = app.listen(env.port, env.host, () => {
-    console.log(`API server running on http://${env.host}:${env.port} [${env.nodeEnv}]`);
+    console.log(
+      `API server running on http://${env.host}:${env.port} [${env.nodeEnv}]`,
+    );
   });
 
-  server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
       console.error(
-        `Port ${env.port} is already in use. Stop the other process or set a different PORT in server/.env.`
+        `Port ${env.port} is already in use. Stop the other process or set a different PORT in server/.env.`,
       );
     } else {
-      console.error('Server error:', err.message);
+      console.error("Server error:", err.message);
     }
     process.exit(1);
   });
 };
 
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled rejection:', err);
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled rejection:", err);
   // In development keep serving so a transient error does not crash nodemon.
   if (env.isProd) process.exit(1);
 });

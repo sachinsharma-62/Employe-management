@@ -7,6 +7,7 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
+    "dev:watch": "node --watch src/server.js",
     "dev:memory": "node scripts/dev-db.js",
     "start": "node src/server.js",
     "seed": "node src/seed.js",

@@ -5,8 +5,8 @@ import connectDB from './config/db.js';
 const start = async () => {
   try {
     await connectDB();
-    app.listen(env.port, () => {
-      console.log(`API server running on ${env.serverUrl} [${env.nodeEnv}]`);
+    app.listen(env.port, env.host, () => {
+      console.log(`API server running on http://${env.host}:${env.port} [${env.nodeEnv}]`);
     });
   } catch (err) {
     console.error('Failed to start server:', err.message);

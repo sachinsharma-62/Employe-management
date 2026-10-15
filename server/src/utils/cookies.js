@@ -6,7 +6,7 @@ export const REFRESH_COOKIE = 'ems_refresh';
 const baseCookie = {
   httpOnly: true,
   secure: env.cookieSecure,
-  sameSite: 'lax',
+  sameSite: env.cookieSameSite,
 };
 
 export const setAccessCookie = (res, token, maxAgeMs) =>

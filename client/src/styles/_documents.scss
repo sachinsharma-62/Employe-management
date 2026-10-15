@@ -1,0 +1,278 @@
+// =============================================================
+// Document management module — stats, filters, table (scoped)
+// =============================================================
+
+.doc-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.doc-stats__tile {
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: 14px;
+  padding: 0.85rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+
+  small {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8b91a4;
+  }
+
+  strong {
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+}
+
+.doc-stats__icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &--indigo {
+    background: rgba($primary, 0.12);
+    color: $primary;
+  }
+
+  &--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #b45309;
+  }
+
+  &--success {
+    background: rgba(22, 163, 74, 0.13);
+    color: #15803d;
+  }
+
+  &--danger {
+    background: rgba(220, 38, 38, 0.12);
+    color: #b91c1c;
+  }
+}
+
+// ---------------- Filters ----------------
+
+.doc-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid $border-color;
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 160px;
+
+    label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b91a4;
+    }
+
+    &--search {
+      flex: 1;
+      min-width: 230px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+}
+
+.doc-search {
+  position: relative;
+
+  svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9aa1b0;
+  }
+
+  .form-control {
+    padding-left: 34px;
+  }
+}
+
+// ---------------- Table ----------------
+
+.doc-table {
+  tbody.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &__employee {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    strong {
+      display: block;
+      font-size: 0.86rem;
+      line-height: 1.2;
+    }
+
+    small {
+      font-size: 0.74rem;
+      color: #98a0b3;
+    }
+  }
+
+  &__avatar-fallback {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #eef0f4;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    text-align: left;
+
+    strong {
+      display: block;
+      font-size: 0.86rem;
+      color: $body-color;
+      line-height: 1.2;
+    }
+
+    small {
+      display: block;
+      font-size: 0.74rem;
+      color: #98a0b3;
+    }
+
+    &:hover strong {
+      color: $primary;
+    }
+  }
+
+  &__icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: $primary-soft;
+    color: $primary;
+  }
+
+  &__reason {
+    font-size: 0.72rem;
+    color: #b91c1c;
+    margin-top: 0.15rem;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.3rem;
+  }
+}
+
+// ---------------- Verify modal ----------------
+
+.doc-verify__options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.doc-verify__option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  cursor: pointer;
+  transition: 0.15s ease;
+
+  input {
+    margin-top: 0.2rem;
+  }
+
+  strong {
+    display: block;
+    font-size: 0.9rem;
+  }
+
+  small {
+    display: block;
+    font-size: 0.76rem;
+    color: #8b91a4;
+  }
+
+  &:hover {
+    border-color: $primary;
+  }
+
+  &.is-active {
+    border-color: $primary;
+    background: $primary-soft;
+  }
+}
+
+// ---------------- Pagination ----------------
+
+.doc-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid $border-color;
+  font-size: 0.82rem;
+}
+
+@media (max-width: 1199.98px) {
+  .doc-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .doc-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .doc-filters__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .doc-verify__options {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,312 @@
+// =============================================================
+// Leave Management — page, panels, modals (scoped under .leave-page)
+// =============================================================
+
+.leave-page {
+  --leave-pending: #f59e0b;
+  --leave-approved: #16a34a;
+  --leave-rejected: #e11d48;
+  --leave-cancelled: #6b7280;
+}
+
+// ---------------- tabs ----------------
+
+.leave-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  background: var(--hub-section);
+  border: 1px solid var(--hub-border);
+  border-radius: var(--hub-radius);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.leave-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--hub-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(13, 148, 136, 0.08);
+    color: var(--hub-teal);
+  }
+
+  &.is-active {
+    background: #ffffff;
+    color: var(--hub-teal);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+  }
+}
+
+// ---------------- summary chips ----------------
+
+.leave-summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.leave-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+
+  &--pending {
+    background: rgba(245, 158, 11, 0.14);
+    color: #b45309;
+  }
+  &--approved {
+    background: rgba(22, 163, 74, 0.14);
+    color: #15803d;
+  }
+  &--rejected {
+    background: rgba(225, 29, 72, 0.14);
+    color: #be123c;
+  }
+  &--cancelled {
+    background: #f1f2f7;
+    color: #6b7280;
+  }
+}
+
+// ---------------- tables ----------------
+
+.leave-employee {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+
+  strong {
+    font-size: 0.82rem;
+  }
+  small {
+    font-size: 0.72rem;
+  }
+}
+
+.leave-reason-cell {
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leave-decision-cell {
+  max-width: 220px;
+  font-size: 0.78rem;
+
+  span {
+    display: block;
+  }
+}
+
+.leave-actions {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.leave-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  color: var(--hub-teal);
+  background: rgba(13, 148, 136, 0.1);
+
+  &:hover {
+    background: rgba(13, 148, 136, 0.18);
+  }
+}
+
+.leave-scope-label {
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+// ---------------- empty state ----------------
+
+.leave-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--hub-muted);
+
+  strong {
+    color: var(--hub-text);
+    font-size: 0.9rem;
+  }
+  small {
+    font-size: 0.76rem;
+  }
+}
+
+// ---------------- balance extras ----------------
+
+.leave-balance {
+  &__value {
+    font-weight: 700;
+
+    &--muted {
+      color: var(--hub-muted);
+    }
+  }
+
+  &__meta {
+    margin-top: 0.25rem;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+
+  &--green .leave-balance__track span { background: #16a34a; }
+  &--amber .leave-balance__track span { background: #f59e0b; }
+  &--cyan .leave-balance__track span { background: #0891b2; }
+  &--purple .leave-balance__track span { background: #7c3aed; }
+  &--secondary .leave-balance__track span { background: #6b7280; }
+}
+
+.leave-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #f1f2f7;
+  color: #6b7280;
+
+  &--carry {
+    background: rgba(8, 145, 178, 0.14);
+    color: #0e7490;
+  }
+  &--cash {
+    background: rgba(124, 58, 237, 0.14);
+    color: #6d28d9;
+  }
+}
+
+// ---------------- modal helpers ----------------
+
+.leave-hint {
+  font-size: 0.74rem;
+  color: var(--hub-muted);
+  margin-top: 0.3rem;
+}
+
+.leave-days-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(13, 148, 136, 0.1);
+  color: var(--hub-teal);
+  font-size: 0.8rem;
+}
+
+.leave-file-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px dashed var(--hub-border-strong);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  background: var(--hub-section);
+
+  span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  button {
+    border: 0;
+    background: transparent;
+    color: var(--hub-muted);
+    display: inline-flex;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--leave-rejected);
+    }
+  }
+}
+
+.leave-decision-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    background: var(--hub-section);
+    border: 1px solid var(--hub-border);
+  }
+
+  small {
+    font-size: 0.7rem;
+    color: var(--hub-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  strong {
+    font-size: 0.85rem;
+  }
+}
+
+.leave-decision-reason {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--hub-muted);
+  margin-bottom: 0.75rem;
+}
+
+.leave-switch-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.leave-check-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  padding: 0.5rem 0;
+}
+
+.leave-multi {
+  min-height: 120px;
+}

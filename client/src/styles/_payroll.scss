@@ -1,0 +1,665 @@
+// =============================================================
+// Payroll module — workflow, table, payslip, reports (scoped)
+// =============================================================
+
+.payroll-page {
+  --payroll-draft: #64748b;
+  --payroll-processed: #0891b2;
+  --payroll-review: #f59e0b;
+  --payroll-approved: #4f46e5;
+  --payroll-paid: #16a34a;
+}
+
+// ---------------- Workflow legend ----------------
+
+.payroll-workflow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1px solid $border-color;
+  border-radius: 14px;
+  padding: 0.75rem 0.9rem;
+
+  &__step {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 10px;
+    background: #fafbfe;
+    border: 1px solid #eef0f4;
+  }
+
+  &__dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--payroll-draft);
+    flex-shrink: 0;
+
+    &--draft { background: var(--payroll-draft); }
+    &--processed { background: var(--payroll-processed); }
+    &--in_review { background: var(--payroll-review); }
+    &--approved { background: var(--payroll-approved); }
+    &--paid { background: var(--payroll-paid); }
+  }
+
+  &__label {
+    flex: 1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: #4b5164;
+  }
+
+  &__count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #6b7280;
+    background: #fff;
+    border-radius: 20px;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid #eef0f4;
+  }
+}
+
+// ---------------- Tabs ----------------
+
+.payroll-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid $border-color;
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5b6272;
+    transition: 0.15s ease;
+
+    &:hover {
+      border-color: $primary;
+      color: $primary;
+    }
+
+    &.is-active {
+      background: $primary;
+      border-color: $primary;
+      color: #fff;
+    }
+  }
+}
+
+// ---------------- Filters ----------------
+
+.payroll-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+
+  &__grid {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 160px;
+
+    label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b91a4;
+    }
+
+    &--search {
+      flex: 1;
+      min-width: 220px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+}
+
+.payroll-search {
+  position: relative;
+
+  svg {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9aa1b0;
+  }
+
+  .form-control {
+    padding-left: 34px;
+  }
+}
+
+// ---------------- Bulk bar ----------------
+
+.payroll-bulkbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  background: $primary-soft;
+  border: 1px solid rgba($primary, 0.25);
+  border-radius: 12px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: $primary-dark;
+
+  .form-select {
+    width: 170px;
+  }
+}
+
+// ---------------- Table ----------------
+
+.payroll-table {
+  tbody.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &__employee {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    strong {
+      display: block;
+      font-size: 0.86rem;
+      line-height: 1.2;
+    }
+
+    small {
+      font-size: 0.74rem;
+      color: #98a0b3;
+    }
+  }
+
+  &__avatar-fallback {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #eef0f4;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+}
+
+// ---------------- Department breakdown ----------------
+
+.dept-payroll {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    strong {
+      margin-left: auto;
+      font-size: 0.85rem;
+    }
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 0.86rem;
+    color: #2b2f3a;
+  }
+
+  &__meta {
+    font-size: 0.74rem;
+    color: #98a0b3;
+  }
+
+  &__track {
+    height: 8px;
+    border-radius: 20px;
+    background: #f1f2f7;
+    overflow: hidden;
+  }
+
+  &__bar {
+    display: block;
+    height: 100%;
+    border-radius: 20px;
+    background: $primary;
+    transition: width 0.3s ease;
+  }
+
+  &__foot {
+    display: flex;
+    gap: 1rem;
+
+    small {
+      font-size: 0.74rem;
+      color: #98a0b3;
+    }
+  }
+}
+
+// ---------------- Payslip ----------------
+
+.payslip {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed $border-color;
+  }
+
+  &__head-info {
+    min-width: 0;
+
+    strong {
+      display: block;
+      font-size: 0.98rem;
+    }
+
+    small {
+      color: #8b91a4;
+      font-size: 0.8rem;
+    }
+  }
+
+  &__net {
+    margin-left: auto;
+    text-align: right;
+
+    span {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b91a4;
+    }
+
+    strong {
+      font-size: 1.15rem;
+      color: $green;
+    }
+  }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  &__col {
+    h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: $primary;
+      margin: 0 0 0.6rem;
+      font-weight: 700;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+
+      li {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        font-size: 0.85rem;
+        padding-bottom: 0.3rem;
+        border-bottom: 1px solid #f5f6fa;
+
+        span {
+          color: #6b7280;
+        }
+      }
+    }
+  }
+
+  &__total {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.55rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid $border-color;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  &__summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    background: #fafbfe;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 0.85rem;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    span {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b91a4;
+    }
+
+    strong {
+      font-size: 0.95rem;
+    }
+  }
+
+  &__workflow h4 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #8b91a4;
+    margin: 0 0 0.6rem;
+  }
+
+  &__note {
+    margin: 0;
+    font-size: 0.84rem;
+    color: #6b7280;
+    background: #fafbfe;
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+// ---------------- Workflow timeline ----------------
+
+.payroll-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.35rem;
+
+  &__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      right: -50%;
+      height: 2px;
+      background: #e5e7eb;
+    }
+
+    &:last-child::before {
+      display: none;
+    }
+
+    &.is-done::before {
+      background: $primary;
+    }
+  }
+
+  &__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #d1d5db;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #e5e7eb;
+    z-index: 1;
+  }
+
+  &__item.is-done .payroll-timeline__dot {
+    background: $primary;
+    box-shadow: 0 0 0 1px $primary;
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #98a0b3;
+    text-align: center;
+  }
+
+  &__item.is-done .payroll-timeline__label {
+    color: $primary;
+  }
+}
+
+// ---------------- Component forms ----------------
+
+.payroll-form {
+  &__title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $primary;
+    font-weight: 700;
+    margin: 0 0 0.7rem;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+
+    label {
+      font-size: 0.84rem;
+      color: #4b5164;
+      margin: 0;
+    }
+
+    .form-control {
+      max-width: 150px;
+      text-align: right;
+    }
+  }
+
+  &__subtotal {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid $border-color;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  &__summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    background: $primary-soft;
+    border-radius: 12px;
+    padding: 0.85rem;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    span {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7280;
+    }
+
+    strong {
+      font-size: 0.95rem;
+    }
+  }
+}
+
+.generate-hint {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  background: #fafbfe;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  color: #6b7280;
+
+  svg {
+    color: $primary;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+}
+
+// ---------------- Salary structure panel ----------------
+
+.payroll-structure__filters {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .payroll-search {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .form-select {
+    width: 200px;
+  }
+}
+
+// ---------------- Reports ----------------
+
+.payroll-report {
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      margin: 0 0 0.15rem;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+
+    div {
+      background: #fff;
+      border: 1px solid $border-color;
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    span {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b91a4;
+    }
+
+    strong {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .payslip__columns,
+  .payslip__summary,
+  .payroll-form__summary,
+  .payroll-report__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .payroll-filters__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+}

@@ -1,0 +1,378 @@
+// ---------------- Global search (topbar) ----------------
+$search-tones: (
+  'primary': $primary,
+  'indigo': $indigo,
+  'info': $cyan,
+  'success': $green,
+  'warning': $amber,
+  'purple': $purple,
+  'blue': $blue,
+  'rose': $rose,
+  'danger': $danger,
+  'secondary': #6b7280,
+);
+
+@each $name, $color in $search-tones {
+  .global-search__badge.tone-#{$name} {
+    background: soft($color);
+    color: $color;
+  }
+
+  .search-group__icon.tone-#{$name},
+  .search-result__icon.tone-#{$name} {
+    background: soft($color);
+    color: $color;
+  }
+}
+
+@keyframes search-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.global-search {
+  position: relative;
+  margin-left: auto;
+  flex: 1 1 460px;
+  min-width: 150px;
+  max-width: 480px;
+
+  &__field {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    position: absolute;
+    left: 0.7rem;
+    color: #98a0b3;
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    height: 38px;
+    padding: 0 2.1rem 0 2.3rem;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    background: #f7f8fb;
+    font-size: 0.86rem;
+    color: $body-color;
+    transition: 0.15s ease;
+
+    &::placeholder {
+      color: #a5abbc;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.12);
+      background: #fff;
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
+  }
+
+  &__spinner {
+    position: absolute;
+    right: 0.75rem;
+    color: #98a0b3;
+    animation: search-spin 0.9s linear infinite;
+  }
+
+  &__clear {
+    position: absolute;
+    right: 0.55rem;
+    border: 0;
+    background: #eef0f6;
+    color: #7c8294;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #e2e5ee;
+      color: $body-color;
+    }
+  }
+
+  &__panel {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    width: min(100%, 30rem);
+    background: #fff;
+    border: 1px solid $border-color;
+    border-radius: 14px;
+    box-shadow: 0 18px 40px -12px rgba(16, 24, 40, 0.22);
+    padding: 0.5rem;
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+    z-index: 2000;
+  }
+
+  &__empty {
+    padding: 1.4rem 0.75rem;
+    text-align: center;
+    color: #8b91a4;
+    font-size: 0.86rem;
+  }
+
+  &__group {
+    margin-bottom: 0.25rem;
+
+    &-title {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #98a0b3;
+      padding: 0.4rem 0.55rem 0.25rem;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    border-radius: 9px;
+    padding: 0.45rem 0.55rem;
+    transition: 0.12s ease;
+
+    &.is-active {
+      background: #f3f4fb;
+    }
+
+    &:hover {
+      background: #f7f8fb;
+    }
+  }
+
+  &__badge {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 0.08rem 0.4rem;
+    white-space: nowrap;
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: $body-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__desc {
+    font-size: 0.75rem;
+    color: #8b91a4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__all {
+    width: 100%;
+    margin-top: 0.25rem;
+    border: 0;
+    background: #f7f8fb;
+    border-radius: 9px;
+    padding: 0.55rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: $primary;
+
+    &:hover {
+      background: $primary-soft;
+    }
+  }
+}
+
+.topbar .topbar__actions {
+  margin-left: 0;
+}
+
+@media (max-width: 767.98px) {
+  .global-search {
+    min-width: 110px;
+  }
+}
+
+// ---------------- Search results page ----------------
+.search-page {
+  &__form {
+    margin-bottom: 0.25rem;
+  }
+
+  &__field {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    position: absolute;
+    left: 0.85rem;
+    color: #98a0b3;
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    height: 48px;
+    padding: 0 6.5rem 0 2.6rem;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    font-size: 0.94rem;
+    background: #fff;
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.12);
+    }
+  }
+
+  &__submit {
+    position: absolute;
+    right: 0.45rem;
+    height: 38px;
+    padding-inline: 1.1rem;
+  }
+
+  &__summary {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin: 0;
+
+    strong {
+      color: $body-color;
+    }
+  }
+
+  &__empty,
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #8b91a4;
+    padding: 3rem 1rem;
+    text-align: center;
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__loading {
+    flex-direction: row;
+    gap: 0.6rem;
+  }
+}
+
+.search-group {
+  &__head {
+    .panel__header {
+      margin-bottom: 0.85rem;
+    }
+  }
+
+  &__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+
+  &__count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #98a0b3;
+    background: #f1f2f7;
+    border-radius: 20px;
+    padding: 0.15rem 0.6rem;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.search-result {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.55rem;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.12s ease;
+
+  &:hover {
+    background: #f7f8fb;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $body-color;
+  }
+
+  &__desc {
+    font-size: 0.78rem;
+    color: #8b91a4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__go {
+    color: #a5abbc;
+    display: inline-flex;
+  }
+}

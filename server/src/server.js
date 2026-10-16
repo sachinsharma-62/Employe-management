@@ -14,8 +14,7 @@ const connectWithRetry = async () => {
       return;
     } catch (err) {
       console.error(
-        `MongoDB connection failed (attempt ${attempt}/${MAX_ATTEMPTS}):`,
-        err.stack || er,
+        `MongoDB connection failed (attempt ${attempt}/${MAX_ATTEMPTS}): ${err.message}`
       );
       if (attempt === MAX_ATTEMPTS) throw err;
       await sleep(RETRY_DELAY_MS);
@@ -27,8 +26,12 @@ const start = async () => {
   try {
     await connectWithRetry();
   } catch (err) {
-    console.error("\nCould not connect to MongoDB. Actual error:");
+    console.error('\nCould not connect to MongoDB. Error details:');
     console.error(err?.stack || err);
+    console.error('\nTroubleshooting Checklist:');
+    console.error('  1. MongoDB Atlas Network Access: Make sure IP 0.0.0.0/0 (Allow from Anywhere) is active.');
+    console.error('  2. Verify MONGODB_URI in Render environment variables or server/.env.');
+    console.error('  3. If running locally without Atlas, use: npm run dev:memory\n');
     process.exit(1);
   }
 

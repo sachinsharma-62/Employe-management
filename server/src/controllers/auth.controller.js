@@ -41,6 +41,8 @@ const issueSession = async (req, res, user) => {
     refreshToken,
     refreshMaxAge: REFRESH_TTL_MS,
   });
+
+  return { accessToken, refreshToken };
 };
 
 const revokeSessionFromRequest = async (req) => {
@@ -80,9 +82,16 @@ export const login = asyncHandler(async (req, res) => {
   user.lastLoginAt = new Date();
   await user.save({ validateBeforeSave: false });
 
-  await issueSession(req, res, user);
+  const tokens = await issueSession(req, res, user);
 
-  res.status(200).json({ success: true, message: 'Logged in successfully', user });
+  res.status(200).json({
+    success: true,
+    message: 'Logged in successfully',
+    user,
+    token: tokens.accessToken,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+  });
 });
 
 // POST /api/auth/refresh
@@ -118,9 +127,16 @@ export const refresh = asyncHandler(async (req, res) => {
   }
 
   await RefreshToken.deleteOne({ _id: stored._id });
-  await issueSession(req, res, user);
+  const tokens = await issueSession(req, res, user);
 
-  res.status(200).json({ success: true, message: 'Session refreshed', user });
+  res.status(200).json({
+    success: true,
+    message: 'Session refreshed',
+    user,
+    token: tokens.accessToken,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+  });
 });
 
 // POST /api/auth/logout

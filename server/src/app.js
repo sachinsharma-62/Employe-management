@@ -24,23 +24,40 @@ app.get('/health', (_req, res) => {
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
-// CORS
-const allowedOrigins = new Set(env.clientUrls);
-if (!env.isProd) {
-  allowedOrigins.add('http://localhost:3000');
-  allowedOrigins.add('http://127.0.0.1:3000');
-}
+// CORS: allow configured origins, any *.vercel.app domain, and localhost
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // non-browser or same-origin
+  const normalized = origin.trim().replace(/\/+$/, '');
+
+  // 1. Configured CLIENT_URL (e.g. custom production domain)
+  if (env.clientUrls.some((u) => u.replace(/\/+$/, '') === normalized)) {
+    return true;
+  }
+
+  // 2. Any Vercel deployment (preview, branch, or production .vercel.app)
+  if (/^https:\/\/[a-zA-Z0-9_.-]+\.vercel\.app$/.test(normalized) || normalized.endsWith('.vercel.app')) {
+    return true;
+  }
+
+  // 3. Localhost / 127.0.0.1 on any port for dev
+  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(normalized)) {
+    return true;
+  }
+
+  return false;
+};
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Same-origin / non-browser requests (no Origin header) are allowed.
-      if (!origin) return callback(null, true);
-      // For disallowed origins just omit the CORS headers (the browser blocks
-      // the response); do not raise a server error.
-      return callback(null, allowedOrigins.has(origin));
+      if (isAllowedOrigin(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
 

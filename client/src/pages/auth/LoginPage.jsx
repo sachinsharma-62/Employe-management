@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowRight, LockKeyhole, Mail } from 'lucide-react';
+import { ArrowRight, LockKeyhole, Mail, Server, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import PasswordInput from '../../components/PasswordInput';
 import { routePaths } from '../../utils/constants';
+import { getBaseUrl } from '../../api/client';
 
 const DEMO_ACCOUNTS = [
   { label: 'Super Admin', email: 'superadmin@office.com', password: 'Super@1234' },
@@ -27,6 +28,21 @@ export default function LoginPage() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showServerConfig, setShowServerConfig] = useState(false);
+  const [customUrl, setCustomUrl] = useState(() => localStorage.getItem('ems_custom_api_url') || '');
+
+  const handleSaveCustomUrl = (e) => {
+    e.preventDefault();
+    if (!customUrl.trim()) {
+      localStorage.removeItem('ems_custom_api_url');
+      toast.info('Reset API URL to default.');
+    } else {
+      localStorage.setItem('ems_custom_api_url', customUrl.trim());
+      toast.success('Backend API URL saved! Retrying...');
+    }
+    setFormError('');
+    setShowServerConfig(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -84,9 +100,70 @@ export default function LoginPage() {
       </div>
 
       {formError && (
-        <div className="alert alert-danger py-2 d-flex align-items-start gap-2" role="alert">
-          <LockKeyhole size={16} className="mt-1 flex-shrink-0" />
-          <span>{formError}</span>
+        <div className="alert alert-danger py-2 d-flex flex-column gap-2" role="alert">
+          <div className="d-flex align-items-start gap-2">
+            <LockKeyhole size={16} className="mt-1 flex-shrink-0" />
+            <span>{formError}</span>
+          </div>
+          {(formError.includes('Unable to reach server') || formError.includes('timed out')) && (
+            <div className="mt-2 pt-2 border-top border-danger-subtle small">
+              <p className="mb-1 text-dark fw-semibold">Troubleshooting:</p>
+              <ul className="ps-3 mb-2 text-dark">
+                <li>
+                  <strong>Render Sleep (Free Tier):</strong> Render spins down when idle and takes ~30-50s to wake up.{' '}
+                  <a
+                    href={`${getBaseUrl().replace(/\/api\/?$/, '')}/health`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary text-decoration-underline"
+                  >
+                    Click to wake backend / check health
+                  </a>.
+                </li>
+                <li>
+                  <strong>MongoDB Atlas:</strong> Make sure IP <code>0.0.0.0/0</code> is added in Atlas Network Access.
+                </li>
+              </ul>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger"
+                onClick={() => setShowServerConfig(!showServerConfig)}
+              >
+                <Server size={14} className="me-1" />
+                {showServerConfig ? 'Hide Server Settings' : 'Configure Backend URL'}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {showServerConfig && (
+        <div className="card p-3 mb-3 border bg-light shadow-sm">
+          <h6 className="fw-bold mb-1 d-flex align-items-center gap-1">
+            <Server size={16} /> Backend Server URL
+          </h6>
+          <p className="text-muted small mb-2">
+            Current target: <code>{getBaseUrl()}</code>
+          </p>
+          <div className="input-group mb-2">
+            <input
+              type="text"
+              className="form-control form-control-sm"
+              placeholder="https://your-backend.onrender.com"
+              value={customUrl}
+              onChange={(e) => setCustomUrl(e.target.value)}
+            />
+            <button
+              type="button"
+              className="btn btn-sm btn-primary"
+              onClick={handleSaveCustomUrl}
+            >
+              Save & Apply
+            </button>
+          </div>
+          <small className="text-muted">
+            Tip: You can also set <code>VITE_API_URL</code> in Vercel Environment Variables.
+          </small>
         </div>
       )}
 
@@ -163,6 +240,17 @@ export default function LoginPage() {
           </div>
         </div>
       )}
+
+      <div className="text-center mt-3 pt-2">
+        <button
+          type="button"
+          onClick={() => setShowServerConfig((prev) => !prev)}
+          className="btn btn-link btn-sm text-muted text-decoration-none p-0"
+        >
+          <Server size={12} className="me-1" />
+          Server: <code>{getBaseUrl()}</code>
+        </button>
+      </div>
     </>
   );
 }

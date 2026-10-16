@@ -38,6 +38,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const onExpired = () => {
       const hadUser = Boolean(userRef.current);
+      localStorage.removeItem('ems_token');
+      localStorage.removeItem('ems_refresh_token');
       setUser(null);
       setStatus('guest');
       if (hadUser) toast.error('Session expired. Please log in again.');
@@ -48,6 +50,12 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await authApi.login(email, password);
+    if (res.data?.token || res.data?.accessToken) {
+      localStorage.setItem('ems_token', res.data.token || res.data.accessToken);
+    }
+    if (res.data?.refreshToken) {
+      localStorage.setItem('ems_refresh_token', res.data.refreshToken);
+    }
     setUser(res.data.user);
     setStatus('authenticated');
     return res.data.user;
@@ -57,6 +65,8 @@ export function AuthProvider({ children }) {
     try {
       await authApi.logout();
     } finally {
+      localStorage.removeItem('ems_token');
+      localStorage.removeItem('ems_refresh_token');
       setUser(null);
       setStatus('guest');
     }
@@ -66,6 +76,8 @@ export function AuthProvider({ children }) {
     try {
       await authApi.logoutAll();
     } finally {
+      localStorage.removeItem('ems_token');
+      localStorage.removeItem('ems_refresh_token');
       setUser(null);
       setStatus('guest');
     }

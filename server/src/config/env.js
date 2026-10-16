@@ -26,7 +26,7 @@ const isProd = nodeEnv === 'production';
 // (e.g. "http://localhost:3000,https://your-app.vercel.app").
 const clientUrls = (process.env.CLIENT_URL || 'http://localhost:3000')
   .split(',')
-  .map((url) => url.trim())
+  .map((url) => url.trim().replace(/\/+$/, ''))
   .filter(Boolean);
 
 const port = Number(process.env.PORT) || 5000;

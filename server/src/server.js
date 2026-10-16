@@ -26,16 +26,9 @@ const connectWithRetry = async () => {
 const start = async () => {
   try {
     await connectWithRetry();
-  } catch {
-    console.error("\nCould not connect to MongoDB. The server cannot start.");
-    console.error("Check that:");
-    console.error("  - MONGODB_URI (or MONGO_URI) in server/.env is correct");
-    console.error(
-      "  - Your current IP is allowed in MongoDB Atlas -> Network Access",
-    );
-    console.error(
-      "  - A local MongoDB is running, or run: npm run dev:memory\n",
-    );
+  } catch (err) {
+    console.error("\nCould not connect to MongoDB. Actual error:");
+    console.error(err?.stack || err);
     process.exit(1);
   }
 
